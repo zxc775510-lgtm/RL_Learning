@@ -29,8 +29,9 @@ async function once() {
   const timer = setInterval(() => { try { setStatus(cfg.version, 'running', { args: cfg.args, ...progress() }); publish(`${NAME} v${cfg.version} 進度`); } catch (e) {} }, 60000);
   while (code === null) await sleep(2000); clearInterval(timer);
   const out = path.join(__dirname, 'results', 'v' + cfg.version, NAME), src = path.join(SR, 'results', NAME);
-  if (code === 0 && fs.existsSync(path.join(src, 'state.js'))) { fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(path.dirname(out), { recursive: true }); fs.cpSync(src, out, { recursive: true }); setStatus(cfg.version, 'done', { args: cfg.args, ...progress() }); }
-  else { setStatus(cfg.version, 'failed', { code }); log('搜尋失敗，狀態碼 ' + code); }
+  const bad = (() => { try { return /"status":"error"/.test(fs.readFileSync(path.join(src, 'state.js'), 'utf8')); } catch (e) { return true; } })(); /* 搜尋崩潰也會回傳 0，要看 state.js 的 status */
+  if (code === 0 && !bad) { fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(path.dirname(out), { recursive: true }); fs.cpSync(src, out, { recursive: true }); setStatus(cfg.version, 'done', { args: cfg.args, ...progress() }); }
+  else { setStatus(cfg.version, 'failed', { code, error: bad }); log('搜尋失敗，狀態碼 ' + code + (bad ? '（模擬崩潰，60 秒後重試）' : '')); }
   const ok = publish(`${NAME} v${cfg.version} 結果`); if (ok && code === 0) { fs.writeFileSync(STATE, JSON.stringify({ done: cfg.version })); log('完成並已上傳'); }
 }
 (async () => {
