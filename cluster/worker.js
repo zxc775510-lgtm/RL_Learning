@@ -20,10 +20,11 @@ const progress = () => { // 讀本機搜尋的即時狀態（live/state.js）：
     const sims = (L.progress && L.progress.sims) || [], frac = sims.length ? sims.reduce((a, s) => a + s.frac, 0) / sims.length : 0;
     return { round: L.round, rounds: L.rounds, phase: L.progress && L.progress.phase, frac: +frac.toFixed(2), start: tot(L.start), best: tot(L.best), elapsed: L.elapsed, reward: L.config && L.config.reward }; } catch (e) { return {}; }
 };
+let beat = 0;
 async function once() {
   const pl = git('pull', '--rebase', '--autostash'); if (pl.status !== 0) { log('pull 失敗：' + (pl.stderr || '').trim().slice(0, 200)); return; }
   const cfg = JSON.parse(fs.readFileSync(CFG, 'utf8')), st = load();
-  if (!cfg.enabled || SLOT > cfg.slots || st.done === cfg.version) return;
+  if (!cfg.enabled || SLOT > cfg.slots || st.done === cfg.version) { /* 待命心跳：每 4 分鐘回報一次「我在，待命中」，控制台才看得到 */ if (Date.now() - beat > 240000) { beat = Date.now(); setStatus(cfg.version, 'idle', { enabled: cfg.enabled, done: st.done === cfg.version }); publish(`${NAME} 待命`); } return; }
   log(`收到新設定 v${cfg.version}，開始跑：${cfg.args.join(' ')}`); setStatus(cfg.version, 'running', { args: cfg.args }); publish(`${NAME} v${cfg.version} 開始`);
   const jf = path.join(SR, 'jobs', NAME + '.json'); fs.mkdirSync(path.dirname(jf), { recursive: true });
   fs.writeFileSync(jf, JSON.stringify({ name: NAME, args: [...cfg.args, '--seedbase=' + ((cfg.seedOffset || 0) + SLOT), '--run=' + NAME] }));
@@ -46,6 +47,11 @@ async function once() {
     console.log(['', bar, '', '   這台是：第 ' + SLOT + ' 號算力機（' + os.hostname() + '）', '', ...rows.map(r => '        ' + r), '', '   待命中，由主機的控制台按「開始計算」才會跑。', '   請不要關閉這個視窗（最小化即可）。', '', bar, ''].join('\n')); }
   /* 自癒：資料夾搬家後，開機捷徑還指著舊位置 → 每次啟動都把捷徑改成指向這台實際的 start_worker.bat */
   if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8', windowsHide: true }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
+  /* 只允許一個在跑：另一個還活著就等它退出（自動重開時舊的正在結束），等不到就自己退出 */
+  { const LOCK = path.join(ROOT, '.worker.pid'), alive = p => { try { process.kill(p, 0); return true; } catch (e) { return false; } }; let old = +(fs.existsSync(LOCK) ? fs.readFileSync(LOCK, 'utf8') : 0);
+    for (let i = 0; i < 8 && old && old !== process.pid && alive(old); i++) await sleep(2000);
+    if (old && old !== process.pid && alive(old)) { console.log('已經有另一個算力機程式在跑（PID ' + old + '），這個視窗不需要，自動關閉。'); await sleep(5000); process.exit(0); }
+    fs.writeFileSync(LOCK, String(process.pid)); }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
   const mt = () => require('crypto').createHash('sha1').update(fs.readFileSync(__filename)).digest('hex'), m0 = mt(); /* 看內容不看修改時間：git 重寫同樣內容的檔案不會觸發重開 */
   for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); spawn(process.execPath, process.argv.slice(1), { cwd: ROOT, detached: true, stdio: 'ignore', windowsHide: true }).unref(); process.exit(0); } await sleep(60000); } /* start_worker.bat 會自動重開 */
