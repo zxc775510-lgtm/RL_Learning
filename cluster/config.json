@@ -1,17 +1,19 @@
 {
- "version": 1,
- "enabled": false,
+ "version": 2,
+ "enabled": true,
  "slots": 4,
  "seedOffset": 0,
  "args": [
   "--mode=hour",
-  "--hour=12",
-  "--warm=3",
   "--map=1",
   "--relax=1",
-  "--reward=cells",
-  "--rounds=10",
-  "--boards=1",
-  "--seeds=3"
+  "--rounds=30",
+  "--cand=5",
+  "--seeds=3",
+  "--boards=4",
+  "--hour=12",
+  "--warm=3",
+  "--lr=0.3",
+  "--reward=cells"
  ]
 }
