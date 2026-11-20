@@ -38,6 +38,10 @@ async function once() {
 }
 (async () => {
   if (process.argv.includes('--hello')) { setStatus(0, 'installed'); log(publish(`job${SLOT} 安裝完成`) ? '已回報主機（Token 可用）' : '回報失敗：請確認 Token／寫入權限'); process.exit(0); }
+  /* 大字顯示這台是幾號（視窗標題也會寫） */
+  { const D = { 0: ['█████', '█   █', '█   █', '█   █', '█████'], 1: ['  █  ', ' ██  ', '  █  ', '  █  ', '█████'], 2: ['█████', '    █', '█████', '█    ', '█████'], 3: ['█████', '    █', '█████', '    █', '█████'], 4: ['█   █', '█   █', '█████', '    █', '    █'], 5: ['█████', '█    ', '█████', '    █', '█████'], 6: ['█████', '█    ', '█████', '█   █', '█████'], 7: ['█████', '    █', '   █ ', '  █  ', '  █  '], 8: ['█████', '█   █', '█████', '█   █', '█████'], 9: ['█████', '█   █', '█████', '    █', '█████'] };
+    process.title = '第 ' + SLOT + ' 號算力機'; const rows = [0, 1, 2, 3, 4].map(r => String(SLOT).split('').map(ch => (D[ch] || D[0])[r]).join('   ').replace(/█/g, '██')), bar = '='.repeat(48);
+    console.log(['', bar, '', '   這台是：第 ' + SLOT + ' 號算力機（' + os.hostname() + '）', '', ...rows.map(r => '        ' + r), '', '   待命中，由主機的控制台按「開始計算」才會跑。', '   請不要關閉這個視窗（最小化即可）。', '', bar, ''].join('\n')); }
   /* 自癒：資料夾搬家後，開機捷徑還指著舊位置 → 每次啟動都把捷徑改成指向這台實際的 start_worker.bat */
   if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8' }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
