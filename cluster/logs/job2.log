@@ -1,5 +1,3 @@
-2026/11/21 01:25:53 [slot 2] 常駐中，每 60 秒檢查一次設定
-2026/11/21 01:25:56 [slot 2] 收到新設定 v4，開始跑：--mode=hour --map=1 --relax=1 --rounds=30 --cand=5 --seeds=1 --boards=4 --hour=12 --warm=3 --lr=0.3 --reward=cells --informed=2 --day=3 --stopthr=0 --stopmin=60
 2026/11/21 01:25:58 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
 fata
 2026/11/21 01:25:59 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
@@ -117,3 +115,5 @@ bash
 2026/11/21 02:05:26 [slot 2] 常駐中，每 60 秒檢查一次設定
 2026/11/21 02:06:31 [slot 2] 程式有更新，重新啟動
 2026/11/21 02:06:31 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:08:37 [slot 2] 程式有更新，重新啟動
+2026/11/21 02:08:38 [slot 2] 常駐中，每 60 秒檢查一次設定
