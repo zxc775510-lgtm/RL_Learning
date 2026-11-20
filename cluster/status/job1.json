@@ -1,1 +1,1 @@
-{"host":"K102-C4-02","slot":1,"version":0,"state":"installed","time":"2026-11-20T16:52:08.848Z"}
+{"host":"K102-C4-02","slot":1,"version":2,"state":"running","time":"2026-11-20T16:54:09.286Z","args":["--mode=hour","--map=1","--relax=1","--rounds=30","--cand=5","--seeds=3","--boards=4","--hour=12","--warm=3","--lr=0.3","--reward=cells"]}
