@@ -22,14 +22,14 @@ const progress = () => { // 讀本機搜尋的即時狀態（live/state.js）：
     const sims = (L.progress && L.progress.sims) || [], frac = sims.length ? sims.reduce((a, s) => a + s.frac, 0) / sims.length : 0;
     return { round: L.round, rounds: L.rounds, phase: L.progress && L.progress.phase, frac: +frac.toFixed(2), start: tot(L.start), best: tot(L.best), elapsed: L.elapsed, reward: L.config && L.config.reward }; } catch (e) { return {}; }
 };
-let beat = 0;
+let beat = 0, seen = null;
 /* 偵錯用：目前這份程式是哪一版（git 提交的短代號＋時間），顯示在視窗與回報裡 */
 const codeVer = () => { const o = git('log', '-1', '--format=%h %cd', '--date=format:%m/%d %H:%M', '--', 'cluster/worker.js').stdout; return (o || '').trim() || '未知'; }, hhmmss = () => new Date().toLocaleTimeString('zh-TW', { hour12: false });
 const titleNow = () => { process.title = '第 ' + SLOT + ' 號｜程式版本 ' + codeVer() + '｜最後檢查 ' + hhmmss(); };
 async function once() {
   const pl = git('pull', '--rebase', '--autostash', 'origin', 'main'); if (pl.status !== 0) { log('pull 失敗：' + (pl.stderr || '').trim().slice(0, 200)); return; }
   const cfg = JSON.parse(fs.readFileSync(CFG, 'utf8')), st = load();
-  if (!cfg.enabled || SLOT > cfg.slots || st.done === cfg.version) { /* 待命心跳：每 4 分鐘回報一次「我在，待命中」，控制台才看得到 */ if (Date.now() - beat > 240000) { beat = Date.now(); setStatus(cfg.version, 'idle', { enabled: cfg.enabled, done: st.done === cfg.version }); publish(`${NAME} 待命`); } return; }
+  if (!cfg.enabled || SLOT > cfg.slots || st.done === cfg.version) { /* 待命心跳：每 4 分鐘回報一次「我在，待命中」，控制台才看得到 */ if (Date.now() - beat > 240000 || seen !== cfg.version) { beat = Date.now(); seen = cfg.version; /* 設定一變就立刻回報「我讀到了」，並附上讀到的參數 */ setStatus(cfg.version, 'idle', { enabled: cfg.enabled, done: st.done === cfg.version, args: cfg.args }); publish(`${NAME} 待命`); } return; }
   log(`收到新設定 v${cfg.version}，開始跑：${cfg.args.join(' ')}`); setStatus(cfg.version, 'running', { args: cfg.args }); publish(`${NAME} v${cfg.version} 開始`);
   const jf = path.join(SR, 'jobs', NAME + '.json'); fs.mkdirSync(path.dirname(jf), { recursive: true });
   fs.writeFileSync(jf, JSON.stringify({ name: NAME, args: [...cfg.args, '--seedbase=' + ((cfg.seedOffset || 0) + SLOT), '--run=' + NAME] }));
