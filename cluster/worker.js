@@ -26,7 +26,9 @@ async function once() {
   const jf = path.join(SR, 'jobs', NAME + '.json'); fs.mkdirSync(path.dirname(jf), { recursive: true });
   fs.writeFileSync(jf, JSON.stringify({ name: NAME, args: [...cfg.args, '--seedbase=' + ((cfg.seedOffset || 0) + SLOT), '--run=' + NAME] }));
   const child = spawn(process.execPath, ['distribute.js', 'run', jf], { cwd: SR, stdio: 'inherit' }); let code = null; child.on('close', c => { code = c; });
-  const timer = setInterval(() => { try { setStatus(cfg.version, 'running', { args: cfg.args, ...progress() }); publish(`${NAME} v${cfg.version} 進度`); } catch (e) {} }, 60000);
+  const timer = setInterval(() => { try { setStatus(cfg.version, 'running', { args: cfg.args, ...progress() }); publish(`${NAME} v${cfg.version} 進度`);
+    /* publish 已 pull：主機改了設定（換版本或暫停）就中止目前這輪，下一圈用新設定重跑 */
+    const n = JSON.parse(fs.readFileSync(CFG, 'utf8')); if (n.version !== cfg.version || !n.enabled) { log('設定已更新或暫停，中止目前這輪'); if (process.platform === 'win32') spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F']); else child.kill(); } } catch (e) {} }, 60000);
   while (code === null) await sleep(2000); clearInterval(timer);
   const out = path.join(__dirname, 'results', 'v' + cfg.version, NAME), src = path.join(SR, 'results', NAME);
   const bad = (() => { try { return /"status":"error"/.test(fs.readFileSync(path.join(src, 'state.js'), 'utf8')); } catch (e) { return true; } })(); /* 搜尋崩潰也會回傳 0，要看 state.js 的 status */
@@ -37,5 +39,6 @@ async function once() {
 (async () => {
   if (process.argv.includes('--hello')) { setStatus(0, 'installed'); log(publish(`job${SLOT} 安裝完成`) ? '已回報主機（Token 可用）' : '回報失敗：請確認 Token／寫入權限'); process.exit(0); }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
-  for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; await sleep(60000); }
+  const mt = () => fs.statSync(__filename).mtimeMs, m0 = mt();
+  for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); spawn(process.execPath, process.argv.slice(1), { cwd: ROOT, detached: true, stdio: 'ignore', windowsHide: true }).unref(); process.exit(0); } await sleep(60000); } /* start_worker.bat 會自動重開 */
 })();
