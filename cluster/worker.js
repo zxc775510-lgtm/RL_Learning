@@ -24,7 +24,7 @@ const progress = () => { // 讀本機搜尋的即時狀態（live/state.js）：
 };
 let beat = 0;
 /* 偵錯用：目前這份程式是哪一版（git 提交的短代號＋時間），顯示在視窗與回報裡 */
-const codeVer = () => { const o = git('log', '-1', '--format=%h %cd', '--date=format:%m/%d %H:%M').stdout; return (o || '').trim() || '未知'; }, hhmmss = () => new Date().toLocaleTimeString('zh-TW', { hour12: false });
+const codeVer = () => { const o = git('log', '-1', '--format=%h %cd', '--date=format:%m/%d %H:%M', '--', 'cluster/worker.js').stdout; return (o || '').trim() || '未知'; }, hhmmss = () => new Date().toLocaleTimeString('zh-TW', { hour12: false });
 const titleNow = () => { process.title = '第 ' + SLOT + ' 號｜程式版本 ' + codeVer() + '｜最後檢查 ' + hhmmss(); };
 async function once() {
   const pl = git('pull', '--rebase', '--autostash', 'origin', 'main'); if (pl.status !== 0) { log('pull 失敗：' + (pl.stderr || '').trim().slice(0, 200)); return; }
