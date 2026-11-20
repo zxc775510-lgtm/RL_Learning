@@ -4,7 +4,9 @@
 const fs = require('fs'), path = require('path'), os = require('os'), { spawn, spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..'), arg = k => (process.argv.find(x => x.startsWith('--' + k + '=')) || '').split('=')[1], SLOT = +arg('slot') || 1, ONCE = process.argv.includes('--once');
 const STATE = path.join(ROOT, '.worker_state.json'), CFG = path.join(__dirname, 'config.json'), SR = path.join(ROOT, '20261116', 'stall_rl'), NAME = 'job' + SLOT;
-const git = (...a) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8' }), sleep = ms => new Promise(r => setTimeout(r, ms));
+/* 專屬 Token 檔在 repo 旁邊：每次呼叫 git 都直接指定它，並清掉其他 credential helper，資料夾搬到哪個磁碟都一樣 */
+const CRED = path.resolve(ROOT, '..', '.git-credentials'), PRE = fs.existsSync(CRED) ? ['-c', 'credential.helper=', '-c', 'credential.helper=store --file=' + CRED.replace(/\\/g, '/')] : [];
+const git = (...a) => spawnSync('git', [...PRE, ...a], { cwd: ROOT, encoding: 'utf8', env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } }), sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = s => { const l = new Date().toLocaleString('zh-TW', { hour12: false }) + ' [slot ' + SLOT + '] ' + s; console.log(l); try { fs.appendFileSync(path.join(ROOT, 'worker.log'), l + '\n'); } catch (e) {} };
 const load = () => { try { return JSON.parse(fs.readFileSync(STATE, 'utf8')); } catch (e) { return { done: 0 }; } };
 function publish(msg, retry = 4) { // 推上去；別台也在推時先 rebase 再推
