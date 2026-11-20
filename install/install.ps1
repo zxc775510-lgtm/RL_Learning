@@ -3,7 +3,7 @@
 # Token：GitHub 上建的「只限這個倉庫、可讀寫」專屬 Token（不是帳號密碼）；安裝時貼一次，只存在這台的 cellmachine-worker 資料夾，uninstall.ps1 會一起刪掉。
 param([int]$Slot = 1, [string]$Token = '', [string]$Dir = '')
 $ErrorActionPreference = 'Stop'
-$pkg = $PSScriptRoot; $base = if ($Dir) { $Dir } else { Join-Path $env:USERPROFILE 'cellmachine-worker' }  # -Dir D:cellmachine-worker 可裝到別的磁碟
+$pkg = $PSScriptRoot; $base = if ($Dir) { $Dir } else { Join-Path $env:USERPROFILE 'cellmachine-worker' }  # -Dir D:/cellmachine-worker 可裝到別的磁碟
 New-Item -ItemType Directory -Force $base | Out-Null
 $url = 'https://github.com/zxc775510-lgtm/RL_Learning.git'; $urlFile = Join-Path $pkg 'repo-url.txt'; if (Test-Path $urlFile) { $url = (Get-Content $urlFile -Raw).Trim() }
 
