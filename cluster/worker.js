@@ -38,6 +38,8 @@ async function once() {
 }
 (async () => {
   if (process.argv.includes('--hello')) { setStatus(0, 'installed'); log(publish(`job${SLOT} 安裝完成`) ? '已回報主機（Token 可用）' : '回報失敗：請確認 Token／寫入權限'); process.exit(0); }
+  /* 自癒：資料夾搬家後，開機捷徑還指著舊位置 → 每次啟動都把捷徑改成指向這台實際的 start_worker.bat */
+  if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8' }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
   const mt = () => fs.statSync(__filename).mtimeMs, m0 = mt();
   for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); spawn(process.execPath, process.argv.slice(1), { cwd: ROOT, detached: true, stdio: 'ignore', windowsHide: true }).unref(); process.exit(0); } await sleep(60000); } /* start_worker.bat 會自動重開 */
