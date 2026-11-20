@@ -11,7 +11,7 @@ const HOUR = arg('mode', 'day') === 'hour', H0 = +arg('hour', 18), RELAX = arg('
    UN = CELLS ? ' 格' : DWELL ? ' 分' : ' 次', // --reward=dwell：獎勵改成「顧客停留」（見 headless --dwell）：每個攤位＝來過它的顧客的平均停留分鐘，全市場＝這批顧客平均停留分鐘
    MOVES = (L, E) => SL.moves(L, E); // --relax=1：板子不預設形式（見 layout.js randomFree）
 // 小時模式（--mode=hour --hour=18 --warm=3）：每次模擬只量 [hour, hour+1) 一小時（前面暖機 warm 小時讓場上有人），分數＝這一小時全市場到訪總數（越高越好）；不退火，只接受比目前高的
-const SB = +arg('seedbase', 0), C = { day: 3, w0: HOUR ? H0 : 5, w1: HOUR ? H0 + 1 : 22, warm: HOUR ? +arg('warm', 3) : 0, rounds: +arg('rounds', 15), conc: +arg('conc', 20), nCand: +arg('cand', 10), nInformed: +arg('informed', 5), top: 3, pZero: 0.25, T0: 0.01, decay: 0.85, seeds: Array.from({ length: Math.max(1, +arg('seeds', 3)) }, (_, i) => i + 1 + SB * 100) }; // --seedbase=K：換一組亂數（模擬器的亂數與搜尋的亂數都整組平移），分給多台電腦各跑一份時每台用不同的 K（見 distribute.js） // --seeds=N：每個配置用幾個亂數（預設 3；校準按鈕會找出建議值）
+const SB = +arg('seedbase', 0), C = { day: +arg('day', 3), w0: HOUR ? H0 : 5, w1: HOUR ? H0 + 1 : 22, warm: HOUR ? +arg('warm', 3) : 0, rounds: +arg('rounds', 15), conc: +arg('conc', 20), nCand: +arg('cand', 10), nInformed: +arg('informed', 5), top: 3, pZero: 0.25, T0: 0.01, decay: 0.85, seeds: Array.from({ length: Math.max(1, +arg('seeds', 3)) }, (_, i) => i + 1 + SB * 100) }; // --seedbase=K：換一組亂數（模擬器的亂數與搜尋的亂數都整組平移），分給多台電腦各跑一份時每台用不同的 K（見 distribute.js） // --seeds=N：每個配置用幾個亂數（預設 3；校準按鈕會找出建議值）
 fs.mkdirSync(LIVE, { recursive: true }); fs.mkdirSync(WORK, { recursive: true });
 const rng = seed0 => { let seed = seed0 + SB * 100000; return () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
 const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
@@ -52,7 +52,7 @@ function aggregate(scs) {
 }
 
 // ---- 狀態輸出（即時畫面讀 live/state.js）----
-const state = { runId: arg('run', ''), status: 'init', round: 0, rounds: C.rounds, config: { mode: HOUR ? 'hour' : 'day', solo: SOLO || null, reward: CELLS ? 'cells' : DWELL ? 'dwell' : 'visits', warm: C.warm, day: '週二（day=3）', window: C.w0 + ':00–' + C.w1 + ':00', seeds: C.seeds, pZero: C.pZero, candidates: C.nCand, top: C.top, conc: C.conc }, start: null, current: null, best: null, original: null, history: [], candidates: [], lastMove: null, log: [], stallBest: {}, t0: Date.now(), updated: null, validation: null };
+const state = { runId: arg('run', ''), status: 'init', round: 0, rounds: C.rounds, config: { mode: HOUR ? 'hour' : 'day', solo: SOLO || null, reward: CELLS ? 'cells' : DWELL ? 'dwell' : 'visits', warm: C.warm, day: ['週日','週一','週二','週三','週四','週五','週六'][(C.day + 6) % 7] + '（day=' + C.day + '）', window: C.w0 + ':00–' + C.w1 + ':00', seeds: C.seeds, pZero: C.pZero, candidates: C.nCand, top: C.top, conc: C.conc }, start: null, current: null, best: null, original: null, history: [], candidates: [], lastMove: null, log: [], stallBest: {}, t0: Date.now(), updated: null, validation: null };
 // ---- 進度（即時畫面的進度條）：每個階段一組模擬，每個模擬的 frac＝0~1（headless 每 10 分鐘模擬時間回報一次）----
 let dirty = false; setInterval(() => { if (dirty) { dirty = false; writeState(); } }, 1500);
 const prog = { phase: '', sims: [] }; state.progress = prog;
