@@ -49,10 +49,11 @@ async function once() {
   if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8', windowsHide: true }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
   /* 只允許一個在跑：另一個還活著就等它退出（自動重開時舊的正在結束），等不到就自己退出 */
   { const LOCK = path.join(ROOT, '.worker.pid'), alive = p => { try { process.kill(p, 0); return true; } catch (e) { return false; } }; let old = +(fs.existsSync(LOCK) ? fs.readFileSync(LOCK, 'utf8') : 0);
+    if (old === +process.env.WORKER_PARENT) old = 0; /* 自己的上一版（正在等我）不算重複 */
     for (let i = 0; i < 8 && old && old !== process.pid && alive(old); i++) await sleep(2000);
     if (old && old !== process.pid && alive(old)) { console.log('已經有另一個算力機程式在跑（PID ' + old + '），這個視窗不需要，自動關閉。'); await sleep(5000); process.exit(0); }
     fs.writeFileSync(LOCK, String(process.pid)); }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
   const mt = () => require('crypto').createHash('sha1').update(fs.readFileSync(__filename)).digest('hex'), m0 = mt(); /* 看內容不看修改時間：git 重寫同樣內容的檔案不會觸發重開 */
-  for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); spawn(process.execPath, process.argv.slice(1), { cwd: ROOT, detached: true, stdio: 'ignore', windowsHide: true }).unref(); process.exit(0); } await sleep(60000); } /* start_worker.bat 會自動重開 */
+  for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); const c = spawnSync(process.execPath, process.argv.slice(1), { cwd: ROOT, stdio: 'inherit', env: { ...process.env, WORKER_PARENT: String(process.pid) } }); process.exit(c.status || 0); /* 在同一個視窗裡接著跑新版，視窗不會消失 */ } await sleep(60000); } /* start_worker.bat 會自動重開 */
 })();
