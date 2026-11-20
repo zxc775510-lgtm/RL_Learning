@@ -1,4 +1,3 @@
-fata
 2026/11/21 01:27:16 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
 fata
 2026/11/21 01:27:17 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
@@ -117,3 +116,4 @@ bash
 2026/11/21 02:23:19 [slot 2] 完成並已上傳
 2026/11/21 02:24:23 [slot 2] 程式有更新，重新啟動
 2026/11/21 02:24:24 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:34:45 [slot 2] 收到新設定 v8，開始跑：--mode=hour --map=1 --relax=1 --rounds=80 --cand=6 --seeds=1 --boards=4 --hour=12 --warm=3 --lr=0.3 --reward=cells --informed=4 --day=3 --stopthr=0 --stopmin=60
