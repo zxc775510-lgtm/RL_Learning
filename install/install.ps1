@@ -1,9 +1,9 @@
 ﻿# 算力機安裝（免管理員）：右鍵 → 用 PowerShell 執行，或在這個資料夾執行  powershell -ExecutionPolicy Bypass -File install.ps1 -Slot 2
 # 做的事：解壓縮隨附的 Node／Git → 從 GitHub 抓程式 → 記下專屬 Token 並回報 → 設成開機自動啟動 → 立刻開始。之後所有設定都由主機遙控。
 # Token：GitHub 上建的「只限這個倉庫、可讀寫」專屬 Token（不是帳號密碼）；安裝時貼一次，只存在這台的 cellmachine-worker 資料夾，uninstall.ps1 會一起刪掉。
-param([int]$Slot = 1, [string]$Token = '')
+param([int]$Slot = 1, [string]$Token = '', [string]$Dir = '')
 $ErrorActionPreference = 'Stop'
-$pkg = $PSScriptRoot; $base = Join-Path $env:USERPROFILE 'cellmachine-worker'
+$pkg = $PSScriptRoot; $base = if ($Dir) { $Dir } else { Join-Path $env:USERPROFILE 'cellmachine-worker' }  # -Dir D:cellmachine-worker 可裝到別的磁碟
 New-Item -ItemType Directory -Force $base | Out-Null
 $url = 'https://github.com/zxc775510-lgtm/RL_Learning.git'; $urlFile = Join-Path $pkg 'repo-url.txt'; if (Test-Path $urlFile) { $url = (Get-Content $urlFile -Raw).Trim() }
 
