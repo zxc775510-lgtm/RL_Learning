@@ -41,7 +41,9 @@ async function once() {
   else { setStatus(cfg.version, 'failed', { code, error: bad }); log('搜尋失敗，狀態碼 ' + code + (bad ? '（模擬崩潰，60 秒後重試）' : '')); }
   const ok = publish(`${NAME} v${cfg.version} 結果`); if (ok && code === 0) { fs.writeFileSync(STATE, JSON.stringify({ done: cfg.version })); log('完成並已上傳'); }
 }
-process.on('uncaughtException', e => { log('未預期錯誤：' + (e && e.stack || e)); publish(NAME + ' 錯誤'); process.exit(1); });
+/* 在同一個視窗裡重新跑自己（程式更新、崩潰都用這個），黑視窗不會消失 */
+const rerun = () => { const c = spawnSync(process.execPath, process.argv.slice(1), { cwd: ROOT, stdio: 'inherit', env: { ...process.env, WORKER_PARENT: String(process.pid) } }); process.exit(c.status || 0); };
+process.on('uncaughtException', e => { log('未預期錯誤：' + (e && e.stack || e)); try { publish(NAME + ' 錯誤'); } catch (x) {} console.log('30 秒後在這個視窗重新啟動…'); Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30000); rerun(); });
 (async () => {
   if (process.argv.includes('--hello')) { setStatus(0, 'installed'); log(publish(`job${SLOT} 安裝完成`) ? '已回報主機（Token 可用）' : '回報失敗：請確認 Token／寫入權限'); process.exit(0); }
   /* 大字顯示這台是幾號（視窗標題也會寫） */
@@ -50,13 +52,12 @@ process.on('uncaughtException', e => { log('未預期錯誤：' + (e && e.stack 
     console.log(['', bar, '', '   這台是：第 ' + SLOT + ' 號算力機（' + os.hostname() + '）', '', ...rows.map(r => '        ' + r), '', '   待命中，由主機的控制台按「開始計算」才會跑。', '   請不要關閉這個視窗（最小化即可）。', '', bar, ''].join('\n')); }
   /* 自癒：資料夾搬家後，開機捷徑還指著舊位置 → 每次啟動都把捷徑改成指向這台實際的 start_worker.bat */
   if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8', windowsHide: true }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
-  /* 只允許一個在跑：另一個還活著就等它退出（自動重開時舊的正在結束），等不到就自己退出 */
-  { const LOCK = path.join(ROOT, '.worker.pid'), alive = p => { try { process.kill(p, 0); return true; } catch (e) { return false; } }; let old = +(fs.existsSync(LOCK) ? fs.readFileSync(LOCK, 'utf8') : 0);
-    if (old === +process.env.WORKER_PARENT) old = 0; /* 自己的上一版（正在等我）不算重複 */
-    for (let i = 0; i < 8 && old && old !== process.pid && alive(old); i++) await sleep(2000);
-    if (old && old !== process.pid && alive(old)) { console.log('已經有另一個算力機程式在跑（PID ' + old + '），這個視窗不需要，自動關閉。'); await sleep(5000); process.exit(0); }
+  /* 只允許一個在跑，但黑視窗絕不自己關：已有另一個在跑時，這個視窗保持開著待命，等對方結束就接手 */
+  { const LOCK = path.join(ROOT, '.worker.pid'), alive = p => { try { process.kill(p, 0); return true; } catch (e) { return false; } }; let shown = false;
+    for (;;) { let old = +(fs.existsSync(LOCK) ? fs.readFileSync(LOCK, 'utf8') : 0); if (old === +process.env.WORKER_PARENT) old = 0; /* 自己的上一版（正在等我）不算重複 */
+      if (!old || old === process.pid || !alive(old)) break; if (!shown) { shown = true; console.log('已經有另一個算力機程式在跑（PID ' + old + '）。這個視窗保持開著待命，對方結束時會自動接手。'); } await sleep(5000); }
     fs.writeFileSync(LOCK, String(process.pid)); }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
   const mt = () => require('crypto').createHash('sha1').update(fs.readFileSync(__filename)).digest('hex'), m0 = mt(); /* 看內容不看修改時間：git 重寫同樣內容的檔案不會觸發重開 */
-  for (;;) { try { await once(); } catch (e) { log('錯誤：' + (e.stack || e.message)); publish(NAME + ' 錯誤'); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); const c = spawnSync(process.execPath, process.argv.slice(1), { cwd: ROOT, stdio: 'inherit', env: { ...process.env, WORKER_PARENT: String(process.pid) } }); process.exit(c.status || 0); /* 在同一個視窗裡接著跑新版，視窗不會消失 */ } await sleep(60000); } /* start_worker.bat 會自動重開 */
+  for (;;) { try { await once(); } catch (e) { log('錯誤：' + (e.stack || e.message)); publish(NAME + ' 錯誤'); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); rerun(); } await sleep(60000); } /* start_worker.bat 會自動重開 */
 })();
