@@ -47,3 +47,4 @@ fatal: could not read Username for 'https://github.com': terminal prompts disabl
 2026/11/21 02:13:30 [slot 1] 常駐中，每 60 秒檢查一次設定
 2026/11/21 02:17:42 [slot 1] 程式有更新，重新啟動
 2026/11/21 02:17:43 [slot 1] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:20:52 [slot 1] 收到新設定 v6，開始跑：--mode=hour --map=1 --relax=1 --hour=12 --warm=3 --lr=0.3 --reward=cells --day=3 --rounds=1 --cand=2 --seeds=1 --boards=1 --informed=1
