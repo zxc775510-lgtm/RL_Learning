@@ -1,5 +1,5 @@
 {
- "version": 3,
+ "version": 4,
  "enabled": true,
  "slots": 4,
  "seedOffset": 0,
@@ -9,11 +9,15 @@
   "--relax=1",
   "--rounds=30",
   "--cand=5",
-  "--seeds=3",
+  "--seeds=1",
   "--boards=4",
   "--hour=12",
   "--warm=3",
   "--lr=0.3",
-  "--reward=cells"
+  "--reward=cells",
+  "--informed=2",
+  "--day=3",
+  "--stopthr=0",
+  "--stopmin=60"
  ]
 }
