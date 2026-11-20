@@ -1,7 +1,7 @@
 {
- "version": 6,
- "enabled": true,
- "slots": 3,
+ "version": 7,
+ "enabled": false,
+ "slots": 4,
  "seedOffset": 0,
  "args": [
   "--mode=hour",
@@ -12,10 +12,12 @@
   "--lr=0.3",
   "--reward=cells",
   "--day=3",
-  "--rounds=1",
-  "--cand=2",
+  "--rounds=80",
+  "--cand=6",
   "--seeds=1",
-  "--boards=1",
-  "--informed=1"
+  "--boards=4",
+  "--informed=4",
+  "--stopthr=0",
+  "--stopmin=60"
  ]
 }
