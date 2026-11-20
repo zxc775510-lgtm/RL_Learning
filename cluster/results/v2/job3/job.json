@@ -1,0 +1,1 @@
+{"name":"job3","args":["--mode=hour","--map=1","--relax=1","--rounds=30","--cand=5","--seeds=3","--boards=4","--hour=12","--warm=3","--lr=0.3","--reward=cells","--seedbase=3","--run=job3"]}
