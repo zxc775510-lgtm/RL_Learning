@@ -1,0 +1,119 @@
+2026/11/21 01:05:51 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:05:52 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:25:53 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:25:56 [slot 2] 收到新設定 v4，開始跑：--mode=hour --map=1 --relax=1 --rounds=30 --cand=5 --seeds=1 --boards=4 --hour=12 --warm=3 --lr=0.3 --reward=cells --informed=2 --day=3 --stopthr=0 --stopmin=60
+2026/11/21 01:25:58 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:25:59 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:26:01 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:26:02 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:27:11 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:27:15 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:27:16 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:27:17 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:28:07 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:28:08 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:28:10 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:28:11 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:29:05 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:29:06 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:29:07 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:29:08 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:30:10 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:30:11 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:30:12 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:30:13 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:12 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:19 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:20 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:21 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:38 [slot 2] 開機捷徑已更新到 D:\cellmachine-worker\start_worker.bat
+2026/11/21 01:31:38 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:31:45 [slot 2] 收到新設定 v4，開始跑：--mode=hour --map=1 --relax=1 --rounds=30 --cand=5 --seeds=1 --boards=4 --hour=12 --warm=3 --lr=0.3 --reward=cells --informed=2 --day=3 --stopthr=0 --stopmin=60
+2026/11/21 01:31:47 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:48 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:49 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:31:50 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:33:00 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:33:01 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:33:03 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:33:04 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:02 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:03 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:04 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:05 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:05 [slot 2] 設定已更新或暫停，中止目前這輪
+2026/11/21 01:34:05 [slot 2] 搜尋失敗，狀態碼 1（模擬崩潰，60 秒後重試）
+2026/11/21 01:34:08 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:09 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:10 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:34:11 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+fata
+2026/11/21 01:35:23 [slot 2] 程式有更新，重新啟動
+2026/11/21 01:35:24 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:45:14 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:52:23 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+bash
+2026/11/21 01:52:24 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+bash
+2026/11/21 01:52:25 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+bash
+2026/11/21 01:52:26 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
+bash
+2026/11/21 01:52:26 [slot 2] 回報失敗：請確認 Token／寫入權限
+2026/11/21 01:54:24 [slot 2] 程式有更新，重新啟動
+2026/11/21 01:54:24 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:56:27 [slot 2] 程式有更新，重新啟動
+2026/11/21 01:56:28 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:56:33 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:59:32 [slot 2] 程式有更新，重新啟動
+2026/11/21 01:59:32 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 01:59:36 [slot 2] 程式有更新，重新啟動
+2026/11/21 02:01:38 [slot 2] 程式有更新，重新啟動
+2026/11/21 02:01:38 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:01:39 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:01:40 [slot 2] pull 失敗：fatal: Cannot rebase onto multiple branches.
+2026/11/21 02:02:15 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:03:43 [slot 2] 程式有更新，重新啟動
+2026/11/21 02:04:21 [slot 2] 程式有更新，重新啟動
+2026/11/21 02:04:21 [slot 2] 常駐中，每 60 秒檢查一次設定
