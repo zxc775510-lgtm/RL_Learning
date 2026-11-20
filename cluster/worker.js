@@ -16,7 +16,7 @@ function publish(msg, retry = 4) { // 推上去；別台也在推時先 rebase �
   for (let i = 0; i < retry; i++) { git('pull', '--rebase', '--autostash', 'origin', 'main'); const p = git('push', 'origin', 'main'); if (p.status === 0) return true; log('push 失敗：' + (p.stderr || '').trim().slice(0, 200)); }
   return false;
 }
-function setStatus(ver, state, extra) { const f = path.join(__dirname, 'status', NAME + '.json'); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify({ host: os.hostname(), slot: SLOT, version: ver, state, time: new Date().toISOString(), ver: progVer(), ...extra })); }
+function setStatus(ver, state, extra) { const f = path.join(__dirname, 'status', NAME + '.json'); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify({ host: os.hostname(), slot: SLOT, version: ver, state, time: new Date().toISOString(), ver: codeVer(), ...extra })); }
 const progress = () => { // 讀本機搜尋的即時狀態（live/state.js）：第幾輪、目前最好、起點
   try { const L = JSON.parse(fs.readFileSync(path.join(SR, 'live', 'state.js'), 'utf8').replace(/^window\.LIVE=/, '').replace(/;\s*$/, '')), tot = x => x && x.J != null ? -x.J : null;
     const sims = (L.progress && L.progress.sims) || [], frac = sims.length ? sims.reduce((a, s) => a + s.frac, 0) / sims.length : 0;
