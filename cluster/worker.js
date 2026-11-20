@@ -6,7 +6,7 @@ const ROOT = path.resolve(__dirname, '..'), arg = k => (process.argv.find(x => x
 const STATE = path.join(ROOT, '.worker_state.json'), CFG = path.join(__dirname, 'config.json'), SR = path.join(ROOT, '20261116', 'stall_rl'), NAME = 'job' + SLOT;
 /* 專屬 Token 檔在 repo 旁邊：每次呼叫 git 都直接指定它，並清掉其他 credential helper，資料夾搬到哪個磁碟都一樣 */
 const CRED = path.resolve(ROOT, '..', '.git-credentials'), PRE = fs.existsSync(CRED) ? ['-c', 'credential.helper=', '-c', 'credential.helper=store --file=' + CRED.replace(/\\/g, '/')] : [];
-const git = (...a) => spawnSync('git', [...PRE, ...a], { cwd: ROOT, encoding: 'utf8', env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } }), sleep = ms => new Promise(r => setTimeout(r, ms));
+const git = (...a) => spawnSync('git', [...PRE, ...a], { cwd: ROOT, encoding: 'utf8', windowsHide: true, env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } }), sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = s => { const l = new Date().toLocaleString('zh-TW', { hour12: false }) + ' [slot ' + SLOT + '] ' + s; console.log(l); try { fs.appendFileSync(path.join(ROOT, 'worker.log'), l + '\n'); } catch (e) {} };
 const load = () => { try { return JSON.parse(fs.readFileSync(STATE, 'utf8')); } catch (e) { return { done: 0 }; } };
 function publish(msg, retry = 4) { // 推上去；別台也在推時先 rebase 再推
@@ -45,8 +45,8 @@ async function once() {
     process.title = '第 ' + SLOT + ' 號算力機'; const rows = [0, 1, 2, 3, 4].map(r => String(SLOT).split('').map(ch => (D[ch] || D[0])[r]).join('   ').replace(/█/g, '██')), bar = '='.repeat(48);
     console.log(['', bar, '', '   這台是：第 ' + SLOT + ' 號算力機（' + os.hostname() + '）', '', ...rows.map(r => '        ' + r), '', '   待命中，由主機的控制台按「開始計算」才會跑。', '   請不要關閉這個視窗（最小化即可）。', '', bar, ''].join('\n')); }
   /* 自癒：資料夾搬家後，開機捷徑還指著舊位置 → 每次啟動都把捷徑改成指向這台實際的 start_worker.bat */
-  if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8' }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
+  if (process.platform === 'win32') { const bat = path.resolve(ROOT, '..', 'start_worker.bat'); if (fs.existsSync(bat)) { const r = spawnSync('powershell', ['-NoProfile', '-Command', "$l=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'cellmachine-worker.lnk')); if ($l.TargetPath -ne $env:BAT) { $l.TargetPath=$env:BAT; $l.WorkingDirectory=Split-Path $env:BAT; $l.WindowStyle=7; $l.Save(); 'fixed' }"], { env: { ...process.env, BAT: bat }, encoding: 'utf8', windowsHide: true }); if ((r.stdout || '').includes('fixed')) log('開機捷徑已更新到 ' + bat); } }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
-  const mt = () => fs.statSync(__filename).mtimeMs, m0 = mt();
+  const mt = () => require('crypto').createHash('sha1').update(fs.readFileSync(__filename)).digest('hex'), m0 = mt(); /* 看內容不看修改時間：git 重寫同樣內容的檔案不會觸發重開 */
   for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); spawn(process.execPath, process.argv.slice(1), { cwd: ROOT, detached: true, stdio: 'ignore', windowsHide: true }).unref(); process.exit(0); } await sleep(60000); } /* start_worker.bat 會自動重開 */
 })();
