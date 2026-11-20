@@ -1,1 +1,1 @@
-{"host":"K1021","slot":2,"version":2,"state":"running","time":"2026-11-20T17:02:34.281Z","args":["--mode=hour","--map=1","--relax=1","--rounds=30","--cand=5","--seeds=3","--boards=4","--hour=12","--warm=3","--lr=0.3","--reward=cells"]}
+{"host":"K1021","slot":2,"version":2,"state":"done","time":"2026-11-20T17:02:48.652Z","args":["--mode=hour","--map=1","--relax=1","--rounds=30","--cand=5","--seeds=3","--boards=4","--hour=12","--warm=3","--lr=0.3","--reward=cells"],"round":0,"rounds":30,"phase":"baseline","frac":0.4,"start":null,"best":null,"elapsed":4,"reward":"cells"}
