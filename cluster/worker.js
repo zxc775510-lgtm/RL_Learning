@@ -10,6 +10,8 @@ const git = (...a) => spawnSync('git', [...PRE, ...a], { cwd: ROOT, encoding: 'u
 const log = s => { const l = new Date().toLocaleString('zh-TW', { hour12: false }) + ' [slot ' + SLOT + '] ' + s; console.log(l); try { fs.appendFileSync(path.join(ROOT, 'worker.log'), l + '\n'); } catch (e) {} };
 const load = () => { try { return JSON.parse(fs.readFileSync(STATE, 'utf8')); } catch (e) { return { done: 0 }; } };
 function publish(msg, retry = 4) { // 推上去；別台也在推時先 rebase 再推
+  /* 把本機日誌最後 120 行一起上傳，主機（和 Claude）才看得到算力機的錯誤 */
+  try { const t = fs.readFileSync(path.join(ROOT, 'worker.log'), 'utf8').split(String.fromCharCode(10)).slice(-120).join(String.fromCharCode(10)); fs.mkdirSync(path.join(__dirname, 'logs'), { recursive: true }); fs.writeFileSync(path.join(__dirname, 'logs', NAME + '.log'), t); } catch (e) {}
   git('add', '-A', 'cluster'); const c = git('commit', '-m', msg); if (c.status !== 0) return true;
   for (let i = 0; i < retry; i++) { git('pull', '--rebase', '--autostash'); const p = git('push'); if (p.status === 0) return true; log('push 失敗：' + (p.stderr || '').trim().slice(0, 200)); }
   return false;
@@ -28,7 +30,7 @@ async function once() {
   log(`收到新設定 v${cfg.version}，開始跑：${cfg.args.join(' ')}`); setStatus(cfg.version, 'running', { args: cfg.args }); publish(`${NAME} v${cfg.version} 開始`);
   const jf = path.join(SR, 'jobs', NAME + '.json'); fs.mkdirSync(path.dirname(jf), { recursive: true });
   fs.writeFileSync(jf, JSON.stringify({ name: NAME, args: [...cfg.args, '--seedbase=' + ((cfg.seedOffset || 0) + SLOT), '--run=' + NAME] }));
-  const child = spawn(process.execPath, ['distribute.js', 'run', jf], { cwd: SR, stdio: 'inherit' }); let code = null; child.on('close', c => { code = c; });
+  const child = spawn(process.execPath, ['distribute.js', 'run', jf], { cwd: SR, stdio: ['ignore', 'pipe', 'pipe'] }); /* 輸出照常顯示；含「錯誤／失敗／Error」的行另存進日誌 */ for (const [st, out] of [[child.stdout, process.stdout], [child.stderr, process.stderr]]) st.on('data', d => { out.write(d); String(d).split(String.fromCharCode(10)).filter(l => /錯誤|失敗|error|exception|fatal|EADDR|ENOENT|EPERM|EMFILE|heap/i.test(l)).forEach(l => { try { fs.appendFileSync(path.join(ROOT, 'worker.log'), '  ↳ ' + l.trim().slice(0, 300) + String.fromCharCode(10)); } catch (e) {} }); }); let code = null; child.on('close', c => { code = c; });
   const timer = setInterval(() => { try { setStatus(cfg.version, 'running', { args: cfg.args, ...progress() }); publish(`${NAME} v${cfg.version} 進度`);
     /* publish 已 pull：主機改了設定（換版本或暫停）就中止目前這輪，下一圈用新設定重跑 */
     const n = JSON.parse(fs.readFileSync(CFG, 'utf8')); if (n.version !== cfg.version || !n.enabled) { log('設定已更新或暫停，中止目前這輪'); if (process.platform === 'win32') spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F']); else child.kill(); } } catch (e) {} }, 60000);
@@ -39,6 +41,7 @@ async function once() {
   else { setStatus(cfg.version, 'failed', { code, error: bad }); log('搜尋失敗，狀態碼 ' + code + (bad ? '（模擬崩潰，60 秒後重試）' : '')); }
   const ok = publish(`${NAME} v${cfg.version} 結果`); if (ok && code === 0) { fs.writeFileSync(STATE, JSON.stringify({ done: cfg.version })); log('完成並已上傳'); }
 }
+process.on('uncaughtException', e => { log('未預期錯誤：' + (e && e.stack || e)); publish(NAME + ' 錯誤'); process.exit(1); });
 (async () => {
   if (process.argv.includes('--hello')) { setStatus(0, 'installed'); log(publish(`job${SLOT} 安裝完成`) ? '已回報主機（Token 可用）' : '回報失敗：請確認 Token／寫入權限'); process.exit(0); }
   /* 大字顯示這台是幾號（視窗標題也會寫） */
@@ -55,5 +58,5 @@ async function once() {
     fs.writeFileSync(LOCK, String(process.pid)); }
   log(ONCE ? '單次模式' : '常駐中，每 60 秒檢查一次設定');
   const mt = () => require('crypto').createHash('sha1').update(fs.readFileSync(__filename)).digest('hex'), m0 = mt(); /* 看內容不看修改時間：git 重寫同樣內容的檔案不會觸發重開 */
-  for (;;) { try { await once(); } catch (e) { log('錯誤：' + e.message); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); const c = spawnSync(process.execPath, process.argv.slice(1), { cwd: ROOT, stdio: 'inherit', env: { ...process.env, WORKER_PARENT: String(process.pid) } }); process.exit(c.status || 0); /* 在同一個視窗裡接著跑新版，視窗不會消失 */ } await sleep(60000); } /* start_worker.bat 會自動重開 */
+  for (;;) { try { await once(); } catch (e) { log('錯誤：' + (e.stack || e.message)); publish(NAME + ' 錯誤'); } if (ONCE) break; if (mt() !== m0) { log('程式有更新，重新啟動'); const c = spawnSync(process.execPath, process.argv.slice(1), { cwd: ROOT, stdio: 'inherit', env: { ...process.env, WORKER_PARENT: String(process.pid) } }); process.exit(c.status || 0); /* 在同一個視窗裡接著跑新版，視窗不會消失 */ } await sleep(60000); } /* start_worker.bat 會自動重開 */
 })();
