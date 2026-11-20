@@ -1,6 +1,4 @@
 fata
-2026/11/21 01:26:02 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
-fata
 2026/11/21 01:27:11 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
 fata
 2026/11/21 01:27:15 [slot 2] push 失敗："C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe" get: line 1: C:/Users/archi/cellmachine-worker/git/mingw64/bin/git-credential-manager.exe: No such file or directory
@@ -117,3 +115,5 @@ bash
 2026/11/21 02:13:51 [slot 2] 程式有更新，重新啟動
 2026/11/21 02:13:52 [slot 2] 常駐中，每 60 秒檢查一次設定
 2026/11/21 02:14:05 [slot 2] 常駐中，每 60 秒檢查一次設定
+2026/11/21 02:18:16 [slot 2] 程式有更新，重新啟動
+2026/11/21 02:18:17 [slot 2] 常駐中，每 60 秒檢查一次設定
