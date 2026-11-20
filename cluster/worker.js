@@ -13,7 +13,7 @@ function publish(msg, retry = 4) { // 推上去；別台也在推時先 rebase �
   /* 把本機日誌最後 120 行一起上傳，主機（和 Claude）才看得到算力機的錯誤 */
   try { const t = fs.readFileSync(path.join(ROOT, 'worker.log'), 'utf8').split(String.fromCharCode(10)).slice(-120).join(String.fromCharCode(10)); fs.mkdirSync(path.join(__dirname, 'logs'), { recursive: true }); fs.writeFileSync(path.join(__dirname, 'logs', NAME + '.log'), t); } catch (e) {}
   git('add', '-A', 'cluster'); const c = git('commit', '-m', msg); if (c.status !== 0) return true;
-  for (let i = 0; i < retry; i++) { git('pull', '--rebase', '--autostash'); const p = git('push'); if (p.status === 0) return true; log('push 失敗：' + (p.stderr || '').trim().slice(0, 200)); }
+  for (let i = 0; i < retry; i++) { git('pull', '--rebase', '--autostash', 'origin', 'main'); const p = git('push', 'origin', 'main'); if (p.status === 0) return true; log('push 失敗：' + (p.stderr || '').trim().slice(0, 200)); }
   return false;
 }
 function setStatus(ver, state, extra) { const f = path.join(__dirname, 'status', NAME + '.json'); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify({ host: os.hostname(), slot: SLOT, version: ver, state, time: new Date().toISOString(), ...extra })); }
@@ -24,7 +24,7 @@ const progress = () => { // 讀本機搜尋的即時狀態（live/state.js）：
 };
 let beat = 0;
 async function once() {
-  const pl = git('pull', '--rebase', '--autostash'); if (pl.status !== 0) { log('pull 失敗：' + (pl.stderr || '').trim().slice(0, 200)); return; }
+  const pl = git('pull', '--rebase', '--autostash', 'origin', 'main'); if (pl.status !== 0) { log('pull 失敗：' + (pl.stderr || '').trim().slice(0, 200)); return; }
   const cfg = JSON.parse(fs.readFileSync(CFG, 'utf8')), st = load();
   if (!cfg.enabled || SLOT > cfg.slots || st.done === cfg.version) { /* 待命心跳：每 4 分鐘回報一次「我在，待命中」，控制台才看得到 */ if (Date.now() - beat > 240000) { beat = Date.now(); setStatus(cfg.version, 'idle', { enabled: cfg.enabled, done: st.done === cfg.version }); publish(`${NAME} 待命`); } return; }
   log(`收到新設定 v${cfg.version}，開始跑：${cfg.args.join(' ')}`); setStatus(cfg.version, 'running', { args: cfg.args }); publish(`${NAME} v${cfg.version} 開始`);
