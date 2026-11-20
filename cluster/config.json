@@ -1,23 +1,21 @@
 {
- "version": 5,
- "enabled": false,
- "slots": 4,
+ "version": 6,
+ "enabled": true,
+ "slots": 3,
  "seedOffset": 0,
  "args": [
   "--mode=hour",
   "--map=1",
   "--relax=1",
-  "--rounds=80",
-  "--cand=6",
-  "--seeds=1",
-  "--boards=4",
   "--hour=12",
   "--warm=3",
   "--lr=0.3",
   "--reward=cells",
-  "--informed=4",
   "--day=3",
-  "--stopthr=0",
-  "--stopmin=60"
+  "--rounds=1",
+  "--cand=2",
+  "--seeds=1",
+  "--boards=1",
+  "--informed=1"
  ]
 }
